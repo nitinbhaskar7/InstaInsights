@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">InstaInsights</string>
+    <string name="logintext">Login using Instagram</string>
+    <string name="johndoe">John Doe</string>
+</resources>
