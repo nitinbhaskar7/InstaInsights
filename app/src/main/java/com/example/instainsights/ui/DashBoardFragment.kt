@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide
 import com.example.instainsights.R
 import com.example.instainsights.adapter.PostsAdapter
 import com.example.instainsights.databinding.FragmentDashboardBinding
+import com.example.instainsights.models.TimeSeriesResponse
 import com.example.instainsights.models.UserSettings
 import com.example.instainsights.viewmodel.CaptionState
 import com.example.instainsights.viewmodel.DashboardData
@@ -32,7 +33,7 @@ import com.example.instainsights.viewmodel.SaveState
 import com.example.instainsights.viewmodel.UiState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-
+import androidx.core.content.ContextCompat
 class DashboardFragment : Fragment() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
 
@@ -149,7 +150,43 @@ class DashboardFragment : Fragment() {
 
 //        AutoDM binding
         bindAutoDmCard(data.userSettings)   // ← add at the end
+
+        bindTimeSeries(data.timeSeries)
     }
+    private fun bindTimeSeries(ts: TimeSeriesResponse) {
+        val card = binding.cardReachChart
+
+        // ── Stats row ──
+        card.tvAvg.text      = formatCount(ts.stats.avg.toInt())
+        card.tvMax.text      = formatCount(ts.stats.max)
+        card.tvPeakDate.text = ts.stats.peakDate.take(10)   // trim to "yyyy-MM-dd"
+
+        // ── Trend badge ──
+        val (trendLabel, trendColor) = when (ts.stats.trend) {
+            "up"   -> "↑  up"   to R.color.accent_follows_icon
+            "down" -> "↓  down" to R.color.colorAccent
+            else   -> "→  flat" to R.color.text_secondary
+        }
+        card.tvTrend.text = trendLabel
+        card.tvTrend.setTextColor(ContextCompat.getColor(requireContext(), trendColor))
+
+        // ── Chart ──
+        card.reachChart.setData(ts.series)
+
+        // ── AI summary ──
+        card.tvAiSummary.text = ts.ai_overview.summary
+            ?: "No summary available."
+
+        // ── Recommendation chip ──
+        val rec = ts.ai_overview.recommendation
+        if (!rec.isNullOrEmpty()) {
+            card.layoutRecommendation.visibility = View.VISIBLE
+            card.tvRecommendation.text           = rec
+        } else {
+            card.layoutRecommendation.visibility = View.GONE
+        }
+    }
+
     private fun setupAutoDmCard() {
 
         // Show/hide input fields based on selected radio option

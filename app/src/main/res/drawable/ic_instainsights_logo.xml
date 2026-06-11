@@ -1,0 +1,44 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.apple.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Background Gradient Circle -->
+    <path android:pathData="M256,256m-216,0a216,216 0,1 1,432 0a216,216 0,1 1,-432 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="70"
+                android:startY="442"
+                android:endX="442"
+                android:endY="70"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#F99B4A"/> <!-- Insta Yellow -->
+                <item android:offset="0.5" android:color="#DD2A7B"/> <!-- Insta Pink/Red -->
+                <item android:offset="1.0" android:color="#8134AF"/> <!-- Insta Purple -->
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Chat Bubble (Auto DM / Reply) -->
+    <path
+        android:pathData="M180,160h152c22,0 40,18 40,40v100c0,22 -18,40 -40,40h-20l-40,40v-40h-92c-22,0 -40,-18 -40,-40V200c0,-22 18,-40 40,-40Z"
+        android:fillColor="#FFFFFF"/>
+
+    <!-- Growth Chart Trend Line inside the bubble (Insights/Growth) -->
+    <path
+        android:pathData="M200,280 L235,245 L270,265 L320,210"
+        android:strokeColor="#DD2A7B"
+        android:strokeWidth="12"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- Arrow head for the growth line -->
+    <path
+        android:pathData="M295,210 h25 v25"
+        android:strokeColor="#DD2A7B"
+        android:strokeWidth="12"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+</vector>

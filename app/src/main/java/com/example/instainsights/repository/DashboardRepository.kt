@@ -3,6 +3,7 @@ package com.example.instainsights.repository
 import android.content.Context
 import com.example.instainsights.TokenManager
 import com.example.instainsights.models.AutoDmRequest
+import com.example.instainsights.models.TimeSeriesResponse
 import com.example.instainsights.models.UserSettings
 import com.example.instainsights.models.caption.SuggestCaptionRequest
 import com.example.instainsights.network.RetrofitClient
@@ -21,6 +22,13 @@ class DashboardRepository(private val context: Context) {
     suspend fun fetchMe() = api.getMe(getToken())
     suspend fun fetchReach() = api.getInsightsReach(getToken(), getInstagramId())
 
+    suspend fun fetchTimeSeries(days: Int = 30) =
+        api.getTimeSeries(
+            metric      = "reach",
+            token       = getToken(),
+            instagramId = getInstagramId(),
+            days        = days
+        )
     suspend fun fetchLikes() = api.getInsightsLikes(getToken(), getInstagramId())
     suspend fun fetchPosts() = api.getPosts(getToken() , getInstagramId())
 

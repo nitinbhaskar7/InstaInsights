@@ -6,6 +6,7 @@ import com.example.instainsights.models.InsightsReach
 import com.example.instainsights.models.Me
 import com.example.instainsights.models.Posts
 import com.example.instainsights.models.SuggestCaption
+import com.example.instainsights.models.TimeSeriesResponse
 import com.example.instainsights.models.UserSettings
 import com.example.instainsights.models.caption.SuggestCaptionRequest
 import com.example.instainsights.models.caption.SuggestCaptionResponse
@@ -59,6 +60,13 @@ interface InstagramApiService {
         @Body request: AutoDmRequest
     ): Response<UserSettings>
 
+    @GET("insights/time_series/{metric}")
+    suspend fun getTimeSeries(
+        @Path("metric")          metric     : String,
+        @Query("access_token")   token      : String,
+        @Query("instagramId")    instagramId: String,
+        @Query("days")           days       : Int = 30
+    ): Response<TimeSeriesResponse>
 
 //    Post related endpoints
 

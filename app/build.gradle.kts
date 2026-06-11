@@ -64,6 +64,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.cardview:cardview:1.0.0")
+
 // ViewBinding (enable in build.gradle: buildFeatures { viewBinding = true })
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

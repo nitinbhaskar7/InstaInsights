@@ -1,11 +1,15 @@
 package com.example.instainsights.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.instainsights.models.AiOverview
 import com.example.instainsights.models.DataXX
 import com.example.instainsights.models.InsightsLikes
 import com.example.instainsights.models.InsightsReach
 import com.example.instainsights.models.Me
+import com.example.instainsights.models.SeriesStats
+import com.example.instainsights.models.TimeSeriesResponse
 import com.example.instainsights.models.UserSettings
 import com.example.instainsights.repository.DashboardRepository
 import kotlinx.coroutines.async
@@ -36,7 +40,8 @@ data class DashboardData(
     val insightsreach: InsightsReach,
     val insightslikes: InsightsLikes,
     val allPosts: List<DataXX>,
-    val userSettings   : UserSettings
+    val userSettings   : UserSettings,
+    val timeSeries    : TimeSeriesResponse
 )
 class DashboardViewModel(private val repo: DashboardRepository) : ViewModel() {
 
@@ -59,19 +64,21 @@ class DashboardViewModel(private val repo: DashboardRepository) : ViewModel() {
                 val likesDeferred = async { repo.fetchLikes() }
                 val postsDeferred = async { repo.fetchPosts() }
                 val settingsDeferred = async { repo.fetchUserSettings() }
-
+                val timeSeriesDeferred   = async { repo.fetchTimeSeries() }
                 // Await all — if any throws, the catch block handles it
                 val me = meDeferred.await()
                 val reach = reachDeferred.await()
                 val likes = likesDeferred.await()
                 val posts = postsDeferred.await()
                 val settings = settingsDeferred.await()
-
+                val timeSeries   = timeSeriesDeferred.await()
                 // Check HTTP codes before accessing bodies
                 if (!me.isSuccessful || !posts.isSuccessful) {
                     _uiState.value = UiState.Error("Failed to load profile or posts")
                     return@launch
                 }
+
+                Log.i("LOL2" , timeSeries.body().toString())
 
                 val postsResponse = posts.body()
 
@@ -97,6 +104,13 @@ class DashboardViewModel(private val repo: DashboardRepository) : ViewModel() {
                                 userId = "",
                                 enableAutoDM = "no",
                                 message = null
+                            ),
+                        timeSeries     = timeSeries.body()
+                            ?: TimeSeriesResponse(      // fallback if endpoint fails
+                                metric      = "reach",
+                                series      = emptyList(),
+                                stats       = SeriesStats(0.0, 0, 0, "flat", ""),
+                                ai_overview = AiOverview(null, null)
                             )
                     )
                 )
